@@ -1,4 +1,14 @@
 
+body > footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .input-group {
     margin-bottom: 40px;
 }
