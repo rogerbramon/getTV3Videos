@@ -1,0 +1,15 @@
+
+.input-group {
+    margin-bottom: 40px;
+}
+#video-output {
+    display: none;
+}
+
+#alert-file-not-found {
+    display: none;
+}
+
+#alert-looking-for-videos {
+    display: none;
+}

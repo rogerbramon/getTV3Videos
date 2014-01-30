@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Descarrega vídeos TV3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/site.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <h1>Descarrega vídeos de TV3</h1>
+      <h3>Introduïu l'adreça del vídeo</h3>
+      <div class="input-group input-group-lg">
+        <input id="video-code" type="text" class="form-control" placeholder="http://www.tv3.cat/3alacarta/#/videos/4874471" />
+        <span class="input-group-btn">
+          <button id="video-code-button" class="btn btn-default" type="button">Buscar</button>
+        </span>
+      </div>
+      <div id="video-output" class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">{{video-title}}</div>
+        <div class="panel-body">
+          <p>{{video-description}}</p>
+          <img src="{{video-imgsrc}}" />
+        </div>
+
+        <!-- List group -->
+        <ul id="video-formats" class="list-group">
+        </ul>
+      </div>
+      <div id="alert-file-not-found" class="alert alert-danger">No s'ha trobat cap vídeo associat a aquesta adreça</div>
+      <div id="alert-looking-for-videos" class="alert alert-info">Cercant vídeos...</div>
+    </div>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready( function() {
+        $("#video-code-button").click( function(){
+          var id = $("#video-code").val().split("/").filter( function(element) {
+            return element.match(/^\d+$/);
+          });
+
+          $("#video-output").hide();
+          if (id.length === 1) {
+
+            $("#alert-file-not-found").hide();
+            $("#alert-looking-for-videos").fadeIn("fast");
+
+            $.get("/videos/" + id[0])
+            .success( function (data) {
+              console.log("success");
+              var jsonData = JSON.parse(data);
+              $("#video-output .panel-heading").html(jsonData.title);
+              $("#video-output .panel-body p").html(jsonData.description);
+              $("#video-output .panel-body img").attr("src", jsonData.imgsrc);
+
+              $("#video-formats").html("");
+
+              $(jsonData.videos).each( function() {
+                var li = $("<li class='list-group-item'></li>")
+                var link = $("<a></a>")
+                li.html("Format: " + this.format + ", Qualitat: " + this.quality + " -  <a href=\"" + this.url + "\">Veure Video (Per descarregar: Botó dret > Descarregar fitxer)</a> </li>")
+                $("#video-formats").append(li);
+              });
+
+              $("#video-output").fadeIn("fast");
+            })
+            .fail ( function() {
+              $("#alert-file-not-found").fadeIn("fast");
+            })
+            .always( function () {
+              $("#alert-looking-for-videos").hide();
+            });
+          }
+          else {
+            $("#alert-file-not-found").fadeIn("fast");
+          }
+        })
+      })
+    </script>
+  </body>
+</html>
