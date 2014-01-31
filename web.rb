@@ -30,7 +30,8 @@ get '/videos/:code' do
     }
 
     status 200
-    body(JSON.pretty_generate(output))
+    content_type :json
+    output.to_json
 end
 
 get '/' do

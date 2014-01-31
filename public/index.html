@@ -65,15 +65,13 @@
 
             $.get("/videos/" + id[0])
             .success( function (data) {
-              console.log("success");
-              var jsonData = JSON.parse(data);
-              $("#video-output .panel-heading").html(jsonData.title);
-              $("#video-output .panel-body p").html(jsonData.description);
-              $("#video-output .panel-body img").attr("src", jsonData.imgsrc);
+              $("#video-output .panel-heading").html(data.title);
+              $("#video-output .panel-body p").html(data.description);
+              $("#video-output .panel-body img").attr("src", data.imgsrc);
 
               $("#video-formats").html("");
 
-              $(jsonData.videos).each( function() {
+              $(data.videos).each( function() {
                 var li = $("<li class='list-group-item'></li>")
                 var link = $("<a></a>")
                 li.html("Format: " + this.format + ", Qualitat: " + this.quality + " -  <a href=\"" + this.url + "\">Veure Video (Per descarregar: Botó dret > Descarregar fitxer)</a> </li>")

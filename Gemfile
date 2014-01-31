@@ -5,3 +5,4 @@ gem 'thin'
 gem 'activesupport'
 gem 'json'
 gem 'i18n'
+gem "multi_json", "~> 1.8.4"
