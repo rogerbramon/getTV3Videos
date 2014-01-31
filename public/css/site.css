@@ -9,6 +9,10 @@ body > footer {
     padding-bottom: 10px;
 }
 
+body {
+    margin-bottom: 60px;
+}
+
 .input-group {
     margin-bottom: 40px;
 }
