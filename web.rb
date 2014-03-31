@@ -13,7 +13,6 @@ get '/videos/:code' do
     outputVideos = []
     response["videos"]["video"].each do |video|
         fileURI = URI("http://www.tv3.cat/pshared/video/FLV_bbd_media.jsp?ID=" + params[:code] + "&QUALITY=" + video["qualitat"] + "&FORMAT=" + video["format"] + "&PROFILE=HTML5")
-        # output += "<li>Format: " + video["format"] + ", Qualitat: " + video["qualitat"] + " <a href=\"" + Hash.from_xml(Net::HTTP.get(uri2))["tv3alacarta"]["item"]["media"] + "\">Descarregar Video</a> </li>"
 
         outputVideos << {
             format: video["format"],
