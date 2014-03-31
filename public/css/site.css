@@ -14,8 +14,14 @@ body {
 }
 
 .input-group {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
+
+.info-news {
+    padding-bottom: 20px;
+    color: firebrick;
+}
+
 #video-output {
     display: none;
 }
