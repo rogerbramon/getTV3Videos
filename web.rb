@@ -11,14 +11,39 @@ get '/videos/:code' do
     response = Hash.from_xml(Net::HTTP.get(formatsURI))["item"]
 
     outputVideos = []
-    response["videos"]["video"].each do |video|
-        fileURI = URI("http://www.tv3.cat/pshared/video/FLV_bbd_media.jsp?ID=" + params[:code] + "&QUALITY=" + video["qualitat"] + "&FORMAT=" + video["format"] + "&PROFILE=HTML5")
+    if response["videos"]["video"].length > 0
+        video = response["videos"]["video"][0]
 
-        outputVideos << {
-            format: video["format"],
-            quality: video["qualitat"],
-            url: Hash.from_xml(Net::HTTP.get(fileURI))["tv3alacarta"]["item"]["media"]
-        }
+        # Video like tv3.cat
+        fileURI = URI("http://www.tv3.cat/pvideo/FLV_bbd_media.jsp?ID=" + params[:code] + "&QUALITY=" + video["qualitat"] + "&FORMAT=" + video["format"] + "&PROFILE=HTML5")
+        mediaURL = Hash.from_xml(Net::HTTP.get(fileURI))["tv3alacarta"]["item"]["media"]
+
+        if mediaURL.is_a?(String) && !mediaURL.empty?
+            outputVideos << {
+                format: video["format"],
+                quality: "Mitjana",
+                url: mediaURL
+            }
+        end
+
+        # Video like TV3 Smart TV App
+        fileURI = URI("http://www.tv3.cat/pvideo/FLV_bbd_media.jsp?ID=" + params[:code] + "&FORMAT=" + video["format"] + "&PROFILE=iptv")
+        mediaHighData = Hash.from_xml(Net::HTTP.get(fileURI))["bbd"]["item"]["media"]
+        mediaHighURL = ""
+
+        if mediaHighData.is_a?(Array)
+            mediaHighURL = mediaHighData.grep(/media.tv3.cat/)
+        elsif mediaHighData.is_a?(String)
+            mediaHighURL = mediaHighData
+        end
+
+        if !mediaHighURL.empty?
+            outputVideos << {
+                format: video["format"],
+                quality: "Alta",
+                url: mediaHighURL
+            }
+        end
     end
 
     output = {
