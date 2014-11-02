@@ -17,11 +17,6 @@ body {
     margin-bottom: 20px;
 }
 
-.info-news {
-    padding-bottom: 20px;
-    color: firebrick;
-}
-
 #video-output {
     display: none;
 }
