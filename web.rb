@@ -11,6 +11,7 @@ get '/videos/:code' do
     response = JSON.parse(Net::HTTP.get(URI(baseURL + "&profile=tablet")).force_encoding("iso-8859-1"))
     
     outputVideos = []
+    subtitles = nil
     if !response.empty? && response["informacio"]["estat"]["actiu"]
         
         # Video like tv3.cat
@@ -30,13 +31,16 @@ get '/videos/:code' do
             quality: "Alta",
             url: videoTV["url"]
         }
+
+        subtitles = response["subtitols"]
     end
 
     output = {
         title: response["informacio"]["titol"],
         description: response["informacio"]["descripcio"],
         imgsrc: response["imatges"]["url"],
-        videos: outputVideos
+        videos: outputVideos,
+        subtitles: subtitles
     }
 
     status 200
