@@ -28,3 +28,12 @@ body {
 #alert-looking-for-videos {
     display: none;
 }
+
+#video-output img {
+	max-width: 100%;
+}
+
+#video-output .panel {
+    margin-right: 15px;
+    margin-left: 15px;
+}

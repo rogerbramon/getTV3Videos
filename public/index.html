@@ -33,10 +33,16 @@
           <p>{{video-description}}</p>
           <img />
         </div>
-
+        <div class="panel panel-default">
         <!-- List group -->
-        <ul id="video-formats" class="list-group">
-        </ul>
+          <div class="panel-heading">Vídeos</div>
+          <ul id="video-formats" class="list-group"></ul>
+        </div>
+        <div class="panel panel-default">
+        <!-- List group -->
+          <div class="panel-heading">Subtítols</div>
+          <ul id="subtitles" class="list-group"></ul>
+        </div>
       </div>
       <div id="alert-file-not-found" class="alert alert-danger">No s'ha trobat cap vídeo associat a aquesta adreça</div>
       <div id="alert-looking-for-videos" class="alert alert-info">Cercant vídeos...</div>
@@ -67,9 +73,9 @@
 
             $.get("/videos/" + id[0])
             .success( function (data) {
-              $("#video-output .panel-heading").html(data.title);
-              $("#video-output .panel-body p").html(data.description);
-              $("#video-output .panel-body img").attr("src", data.imgsrc);
+              $("#video-output > .panel-heading").html(data.title);
+              $("#video-output > .panel-body p").html(data.description);
+              $("#video-output > .panel-body img").attr("src", data.imgsrc);
 
               $("#video-formats").html("");
 
@@ -79,6 +85,16 @@
                 li.html("Format: " + this.format + ", Qualitat: " + this.quality + " -  <a href=\"" + this.url + "\">Veure Video (Per descarregar: Botó dret > Descarregar fitxer)</a> </li>")
                 $("#video-formats").append(li);
               });
+
+              if (data.subtitles !== null) {
+                $("#subtitles").parent().show();
+                var li = $("<li class='list-group-item'></li>")
+                var link = $("<a></a>")
+                li.html("Format: " + data.subtitles.format + ", Idioma: " + data.subtitles.text + " -  <a href=\"" + data.subtitles.url + "\">Descarregar Subtítols (Per descarregar: Botó dret > Descarregar fitxer)</a> </li>")
+                $("#subtitles").html(li);
+              } else {
+                $("#subtitles").parent().hide();
+              }
 
               $("#video-output").fadeIn("fast");
             })
