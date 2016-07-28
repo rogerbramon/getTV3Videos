@@ -8,7 +8,7 @@ set :public_folder, Proc.new { File.join(root, "public") }
 get '/videos/:code' do
     baseURL = "http://dinamics.ccma.cat/pvideo/media.jsp?media=video&version=0s&idint=" + params[:code] 
     
-    response = JSON.parse(Net::HTTP.get(URI(baseURL + "&profile=pc")).force_encoding("iso-8859-1"))
+    response = JSON.parse(Net::HTTP.get(URI(baseURL + "&profile=tablet")).force_encoding("iso-8859-1"))
     
     outputVideos = []
     if !response.empty? && response["informacio"]["estat"]["actiu"]
