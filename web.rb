@@ -26,11 +26,13 @@ get '/videos/:code' do
         # Video like TV3 Smart TV App
         videoTV = JSON.parse(Net::HTTP.get(URI(baseURL + "&profile=tv")))["media"]
 
-        outputVideos << {
-            format: videoTV["format"],
-            quality: "Alta",
-            url: videoTV["url"]
-        }
+        if videoTV
+            outputVideos << {
+                format: videoTV["format"],
+                quality: "Alta",
+                url: videoTV["url"]
+            }
+        end
 
         subtitles = response["subtitols"]
     end
