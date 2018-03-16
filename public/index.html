@@ -39,6 +39,11 @@
           <ul id="video-formats" class="list-group"></ul>
         </div>
         <div class="panel panel-default">
+          <!-- List group -->
+            <div class="panel-heading">Vídeos amb audiodescripció</div>
+            <ul id="audiodescription-formats" class="list-group"></ul>
+          </div>
+        <div class="panel panel-default">
         <!-- List group -->
           <div class="panel-heading">Subtítols</div>
           <ul id="subtitles" class="list-group"></ul>
@@ -85,6 +90,20 @@
                 li.html("Format: " + this.format + ", Qualitat: " + this.quality + " -  <a href=\"" + this.url + "\">Veure Video (Per descarregar: Botó dret > Descarregar fitxer)</a> </li>")
                 $("#video-formats").append(li);
               });
+
+              $("#audiodescription-formats").html("");
+
+              if (data.audioDescriptionVideos.length > 0) {
+                $("#audiodescription-formats").parent().show();
+                $(data.audioDescriptionVideos).each( function() {
+                  var li = $("<li class='list-group-item'></li>")
+                  var link = $("<a></a>")
+                  li.html("Format: " + this.format + ", Qualitat: " + this.quality + " -  <a href=\"" + this.url + "\">Veure Video (Per descarregar: Botó dret > Descarregar fitxer)</a> </li>")
+                  $("#audiodescription-formats").append(li);
+                });
+              } else {
+                $("#audiodescription-formats").parent().hide();
+              }
 
               if (data.subtitles !== null) {
                 $("#subtitles").parent().show();

@@ -12,6 +12,7 @@ get '/videos/:code' do
     
     outputVideos = []
     subtitles = nil
+    audioDescriptionVideos = []
     if !response.empty? && response["informacio"]["estat"]["actiu"]
         
         media = response["media"]
@@ -25,6 +26,20 @@ get '/videos/:code' do
         end
 
         subtitles = response["subtitols"]
+
+        variants = response["variants"] 
+
+        if variants && variants["id"] == "AUD" 
+            variantsMedia = variants["media"]
+            print variantsMedia
+            for url in variantsMedia["url"] 
+                audioDescriptionVideos << {
+                    format: variantsMedia["format"],
+                    quality: url["label"],
+                    url: url["file"]
+                }
+            end
+        end
     end
 
     output = {
@@ -32,6 +47,7 @@ get '/videos/:code' do
         description: response["informacio"]["descripcio"],
         imgsrc: response["imatges"]["url"],
         videos: outputVideos,
+        audioDescriptionVideos: audioDescriptionVideos,
         subtitles: subtitles
     }
 
