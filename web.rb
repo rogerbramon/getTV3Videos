@@ -8,29 +8,19 @@ set :public_folder, Proc.new { File.join(root, "public") }
 get '/videos/:code' do
     baseURL = "http://dinamics.ccma.cat/pvideo/media.jsp?media=video&version=0s&idint=" + params[:code] 
     
-    response = JSON.parse(Net::HTTP.get(URI(baseURL + "&profile=tablet")).force_encoding("iso-8859-1"))
+    response = JSON.parse(Net::HTTP.get(URI(baseURL)).force_encoding("iso-8859-1"))
     
     outputVideos = []
     subtitles = nil
     if !response.empty? && response["informacio"]["estat"]["actiu"]
         
-        # Video like tv3.cat
-        videoPC = response["media"]
+        media = response["media"]
 
-        outputVideos << {
-            format: videoPC["format"],
-            quality: "Mitjana",
-            url: videoPC["url"]
-        }
-
-        # Video like TV3 Smart TV App
-        videoTV = JSON.parse(Net::HTTP.get(URI(baseURL + "&profile=tv")))["media"]
-
-        if videoTV
+        for url in media["url"] 
             outputVideos << {
-                format: videoTV["format"],
-                quality: "Alta",
-                url: videoTV["url"]
+                format: media["format"],
+                quality: url["label"],
+                url: url["file"]
             }
         end
 
