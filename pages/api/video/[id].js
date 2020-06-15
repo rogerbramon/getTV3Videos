@@ -11,7 +11,7 @@ export default async (req, res) => {
   }
 
   let outputVideos = []
-  let subtitles = null
+  let subtitles = []
   let audioDescriptionVideos = []
 
   let response = await fetch(`http://dinamics.ccma.cat/pvideo/media.jsp?media=video&version=0s&idint=${id}`)
@@ -33,12 +33,13 @@ export default async (req, res) => {
       })
     });
 
-    subtitles = body.subtitols
+    if (body.subtitols !== undefined) {
+      subtitles = [].concat(body.subtitols)
+    }
 
     const variants = body.variants
     if (variants !== undefined && variants.id === "AUD") {
         const variantsMedia = variants.media
-
         const urls = [].concat(variantsMedia.url)
 
         urls.forEach(url => {
