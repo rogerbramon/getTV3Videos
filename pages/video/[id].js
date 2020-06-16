@@ -23,8 +23,8 @@ export default function Video() {
   return (
     <>
       <div >
-        {error? <div>Failed to load video</div>:
-        !data? <div>Loading...</div>:
+        {error? <div>No s'ha trobat cap vídeo associat a aquesta adreça</div>:
+        !data? <div>Cercant vídeos...</div>:
         <div className="videoCard" style={ {backgroundImage: `url('${data.imgsrc}')`} }>
           <div className="info">
             <h2>{data.title}</h2>
