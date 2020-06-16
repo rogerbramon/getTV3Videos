@@ -30,6 +30,7 @@ export default function Layout(props) {
 
         main {
           margin: 0 auto;
+          width: 100%;
           max-width: 1100px;
           padding: 24px 12px;
           flex-grow: 1;
