@@ -10,15 +10,40 @@ export default function Layout(props) {
       </Head>
 
       <div className="container">
-        <h1 className="title">Descarrega vídeos de TV3</h1>
-        <Search></Search>
-        {props.children}
+        <main>
+          <h1 className="title">Descarrega vídeos de TV3</h1>
+          <Search></Search>
+          {props.children}
+        </main>
+        <footer>
+          Roger Bramon{' · '}
+          <a href="http://twitter.com/rogerbramon">@rogerbramon</a>{' · '}
+          <a href="http://github.com/rogerbramon/getTV3Videos">GitHub</a>
+        </footer>
       </div>
       <style jsx>{`
         .container {
-          max-width: 1100px;
-          padding: 24px;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+        }
+
+        main {
           margin: 0 auto;
+          max-width: 1100px;
+          padding: 24px 12px;
+          flex-grow: 1;
+        }
+
+        footer {
+          width: 100%;
+          height: 60px;
+          border-top: 1px solid #eaeaea;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 0.8rem;
+          white-space: break-spaces;
         }
 
         a {
