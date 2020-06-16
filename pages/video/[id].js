@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 import useSwr from 'swr'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
@@ -22,7 +23,16 @@ export default function Video() {
 
   return (
     <>
-      <div >
+      <Head>
+        <title>
+          {
+            error? 'Descarrega vídeos de TV3':
+            !data? 'Descarrega vídeos de TV3':
+            `Descarrega vídeos de TV3 - ${data.title}`
+          }
+        </title>
+      </Head>
+      <div>
         {error? <div>No s'ha trobat cap vídeo associat a aquesta adreça</div>:
         !data? <div>Cercant vídeos...</div>:
         <div className="videoCard" style={ {backgroundImage: `url('${data.imgsrc}')`} }>

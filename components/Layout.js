@@ -1,9 +1,14 @@
 import Search from './Search'
+import Head from 'next/head'
 
 export default function Layout(props) {
 
   return (
     <>
+      <Head>
+        <meta name="author" content="Roger Bramon, http://twitter.com/rogerbramon" />
+      </Head>
+
       <div className="container">
         <h1 className="title">Descarrega vídeos de TV3</h1>
         <Search></Search>
