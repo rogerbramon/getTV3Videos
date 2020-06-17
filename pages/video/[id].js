@@ -1,12 +1,71 @@
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import useSwr from 'swr'
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: true
+  };
+}
 
-export default function Video() {
+export async function getStaticProps({ params }) {
+  let outputVideos = []
+  let subtitles = []
+  let audioDescriptionVideos = []
+
+  let response = await fetch(`http://dinamics.ccma.cat/pvideo/media.jsp?media=video&version=0s&idint=${params.id}`)
+  if (!response.ok) {
+    return { props: { data: null} }
+  }
+
+  const body = JSON.parse(await response.textConverted())
+
+  if (body !== undefined && body.informacio.estat.actiu) {
+    const media = body.media
+    const urls = [].concat(media.url)
+
+    urls.forEach(url => {
+      outputVideos.push({
+        format: media.format,
+        quality: url.label,
+        url: url.file
+      })
+    });
+
+    if (body.subtitols !== undefined) {
+      subtitles = [].concat(body.subtitols)
+    }
+
+    const variants = body.variants
+    if (variants !== undefined && variants.id === "AUD") {
+        const variantsMedia = variants.media
+        const urls = [].concat(variantsMedia.url)
+
+        urls.forEach(url => {
+          audioDescriptionVideos.push({
+            format: variantsMedia.format,
+            quality: url.label,
+            url: url.file
+          });
+        });
+    }
+  }
+
+  const data = {
+    title: body.informacio.titol,
+    description: body.informacio.descripcio,
+    imgsrc: body.imatges.url,
+    videos: outputVideos,
+    audioDescriptionVideos: audioDescriptionVideos,
+    subtitles: subtitles
+  }
+
+  // Pass post data to the page via props
+  return { props: { data } }
+}
+
+export default function Video({ data }) {
   const router = useRouter()
-  const { data, error } = useSwr(`/api/video/${router.query.id}`, fetcher)
 
   let videosCompare = (a,b) => {
     var qualityA = a.quality.toUpperCase();
@@ -26,15 +85,15 @@ export default function Video() {
       <Head>
         <title>
           {
-            error? 'Descarrega vídeos de TV3':
+            router.isFallback? 'Descarrega vídeos de TV3':
             !data? 'Descarrega vídeos de TV3':
             `Descarrega vídeos de TV3 - ${data.title}`
           }
         </title>
       </Head>
       <div>
-        {error? <div>No s'ha trobat cap vídeo associat a aquesta adreça</div>:
-        !data? <div>Cercant vídeos...</div>:
+        {router.isFallback? <div>Cercant vídeos...</div>:
+        !data? <div>No s'ha trobat cap vídeo associat a aquesta adreça</div>:
         <div className="videoCard" style={ {backgroundImage: `url('${data.imgsrc}')`} }>
           <div className="info">
             <h2>{data.title}</h2>
@@ -45,7 +104,7 @@ export default function Video() {
                   <h3>Vídeos</h3>
                   {data.videos.sort(videosCompare).map((video) => {
                     return (
-                      <a href={video.url}>{video.quality} <span>{video.format}</span></a>
+                      <a key={video.url} href={video.url}>{video.quality} <span>{video.format}</span></a>
                     )
                   })}
                 </div>
@@ -57,7 +116,7 @@ export default function Video() {
                   <h3>Vídeos amb audiodescripció</h3>
                   {data.audioDescriptionVideos.sort(videosCompare).map((video) => {
                     return (
-                      <a href={video.url}>{video.quality} <span>{video.format}</span></a>
+                      <a key={video.url} href={video.url}>{video.quality} <span>{video.format}</span></a>
                     )
                   })}
                 </div>
@@ -69,7 +128,7 @@ export default function Video() {
                   <h3>Subtítols</h3>
                   {data.subtitles.map((sub) => {
                     return (
-                      <a href={sub.url} download>{sub.text} <span>{sub.format}</span></a>
+                      <a key={sub.url} href={sub.url} download>{sub.text} <span>{sub.format}</span></a>
                     )
                   })}
                 </div>
@@ -154,5 +213,5 @@ export default function Video() {
 
       `}</style>
     </>
-  )  
+  )
 }
