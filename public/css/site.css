@@ -37,3 +37,16 @@ body {
     margin-right: 15px;
     margin-left: 15px;
 }
+
+.info {
+    background-color: black;
+    padding: 12px;
+    color: white;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.info a {
+    color: white;
+    text-decoration: underline;
+}
