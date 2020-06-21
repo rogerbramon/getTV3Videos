@@ -33,11 +33,14 @@ export default function Video({ data }) {
 
   let parseDescription = (desc) => {
     const separator = '<br /><br />'
-    const paragraphs = desc.split(separator)
-    let output = paragraphs[0]
-
-    if (paragraphs.length > 1) {
-      output += separator + paragraphs[1]
+    let output = ""
+    
+    if (desc !== undefined && desc != null) {
+      const paragraphs = desc.split(separator)
+      output = paragraphs[0]
+      if (paragraphs.length > 1) {
+        output += separator + paragraphs[1]
+      }
     }
 
     return {__html: output}
