@@ -53,6 +53,7 @@ export default function Video({ data }) {
             `Descarrega vídeos de TV3 - ${data.title}`
           }
         </title>
+        {data? <meta name="description" content={data.description} /> : ''}
       </Head>
       <div>
         {router.isFallback? <div>Cercant vídeos...</div>:
