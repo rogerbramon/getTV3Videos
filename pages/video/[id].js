@@ -31,6 +31,18 @@ export default function Video({ data }) {
     return 0;
   }
 
+  let parseDescription = (desc) => {
+    const separator = '<br /><br />'
+    const paragraphs = desc.split(separator)
+    let output = paragraphs[0]
+
+    if (paragraphs.length > 1) {
+      output += separator + paragraphs[1]
+    }
+
+    return {__html: output}
+  }
+
   return (
     <>
       <Head>
@@ -48,7 +60,7 @@ export default function Video({ data }) {
         <div className="videoCard" style={ {backgroundImage: `url('${data.imgsrc}')`} }>
           <div className="info">
             <h2>{data.title}</h2>
-            <p className="synopsis">{data.description}</p>
+            <p className="synopsis" dangerouslySetInnerHTML={parseDescription(data.description)}></p>
             {
               (data.videos.length > 0)?
                 <div className="links">
