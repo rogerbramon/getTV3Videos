@@ -5,10 +5,15 @@ export default function Search() {
   let [ videoCode, setVideoCode ] = useState()
 
   let updateCode = (event) => {
-    const id = event.target.value.split("/").filter( function(element) {
+    const ids = event.target.value.split("/").filter( function(element) {
       return element.match(/^\d+$/);
     })
-    setVideoCode(id)
+    if (ids.length > 0) {
+      setVideoCode(ids[ids.length - 1])
+    } 
+    else {
+      setVideoCode(undefined)
+    }
   }
 
   return (
