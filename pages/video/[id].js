@@ -12,7 +12,10 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const data = await getVideo(params.id)
 
-  return { props: { data } }
+  return { 
+    props: { data },
+    revalidate: 3600,
+  }
 }
 
 export default function Video({ data }) {
