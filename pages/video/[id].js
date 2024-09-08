@@ -10,13 +10,17 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const data = await getVideo(params.id)
+  const data = await getVideo(params.id);
 
-  return { 
+  const shouldRevalidate =
+    Array.isArray(data?.videos) && data.videos.length === 0;
+
+  return {
     props: { data },
-    revalidate: 3600,
-  }
+    ...(shouldRevalidate && { revalidate: 86400 }),
+  };
 }
+
 
 export default function Video({ data }) {
   const router = useRouter()
