@@ -13,11 +13,11 @@ export async function getStaticProps({ params }) {
   const data = await getVideo(params.id);
 
   const shouldRevalidate =
-    Array.isArray(data?.videos) && data.videos.length === 0;
+    data === null || (Array.isArray(data?.videos) && data.videos.length === 0);
 
   return {
     props: { data },
-    ...(shouldRevalidate && { revalidate: 86400 }),
+    ...(shouldRevalidate && { revalidate: 3600 }),
   };
 }
 
