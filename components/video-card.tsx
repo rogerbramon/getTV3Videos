@@ -2,6 +2,7 @@ import { VideoData, Video } from "@/lib/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Download } from "lucide-react";
+import { DashDownloads } from "@/components/dash-downloads";
 
 interface VideoCardProps {
   data: VideoData;
@@ -70,6 +71,8 @@ export default function VideoCard({ data }: VideoCardProps) {
             </div>
           </div>
         )}
+
+        {data.dashUrl && <DashDownloads mpdUrl={data.dashUrl} title={data.title} />}
 
         {data.audioDescriptionVideos.length > 0 && (
           <div className="mb-6">

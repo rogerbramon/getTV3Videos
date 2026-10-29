@@ -18,6 +18,7 @@ export interface VideoData {
   description: string;
   imgsrc: string;
   videos: Video[];
+  dashUrl: string | null;
   audioDescriptionVideos: Video[];
   subtitles: Subtitle[];
 }
@@ -77,6 +78,10 @@ const URL_REPLACEMENTS: UrlReplacement[] = [
   },
 ];
 
+function isDashUrl(url: ApiUrl): boolean {
+  return url.file.endsWith(".mpd");
+}
+
 function replaceUrl(url: string): string {
   return URL_REPLACEMENTS.reduce(
     (acc, { from, to }) => acc.replace(from, to),
@@ -88,10 +93,11 @@ export async function getVideo(id: string): Promise<VideoData | null> {
   let outputVideos: Video[] = [];
   let subtitles: Subtitle[] = [];
   let audioDescriptionVideos: Video[] = [];
+  let dashUrl: string | null = null;
 
   try {
     const response = await fetch(
-      `https://dinamics.ccma.cat/pvideo/media.jsp?media=video&version=0s&idint=${id}`,
+      `https://dinamics.ccma.cat/pvideo/media.jsp?media=video&version=0s&idint=${id}&format=dm`,
       { next: { revalidate: 3600 } }
     );
 
@@ -105,7 +111,9 @@ export async function getVideo(id: string): Promise<VideoData | null> {
       const media = body.media;
       const urls = Array.isArray(media.url) ? media.url : [media.url];
 
-      urls.forEach((url) => {
+      dashUrl = urls.find(isDashUrl)?.file ?? null;
+
+      urls.filter((url) => !isDashUrl(url)).forEach((url) => {
         outputVideos.push({
           format: media.format,
           quality: url.label,
@@ -149,7 +157,7 @@ export async function getVideo(id: string): Promise<VideoData | null> {
           ? variantsMedia.url
           : [variantsMedia.url];
 
-        urls.forEach((url) => {
+        urls.filter((url) => !isDashUrl(url)).forEach((url) => {
           audioDescriptionVideos.push({
             format: variantsMedia.format,
             quality: url.label,
@@ -164,6 +172,7 @@ export async function getVideo(id: string): Promise<VideoData | null> {
       description: body.informacio.descripcio || "",
       imgsrc: body.imatges.url,
       videos: outputVideos,
+      dashUrl: dashUrl,
       audioDescriptionVideos: audioDescriptionVideos,
       subtitles: subtitles,
     };
