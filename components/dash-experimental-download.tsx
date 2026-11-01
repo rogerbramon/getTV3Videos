@@ -36,6 +36,18 @@ export function DashExperimentalDownload({
     }
   }, [method]);
 
+  // Start the save on its own; the button below stays as a fallback in case
+  // the browser blocks or asks about downloads that weren't clicked.
+  useEffect(() => {
+    if (!finished?.saveUrl) {
+      return;
+    }
+    const link = document.createElement("a");
+    link.href = finished.saveUrl;
+    link.download = finished.name;
+    link.click();
+  }, [finished]);
+
   async function handleSelect(video: DashRepresentation): Promise<void> {
     const name = fileNameFor(title, video);
     if (method === "direct") {
@@ -70,6 +82,10 @@ export function DashExperimentalDownload({
         <DashDownloadProgress video={activeVideo} progress={progress} onCancel={cancel} />
       ) : finished?.saveUrl ? (
         <div className="flex flex-wrap items-center gap-3">
+          <p className="basis-full text-sm text-neutral-400">
+            Fet! El vídeo s&apos;està desant a Baixades. Si no comença, fes
+            clic al botó.
+          </p>
           <a
             href={finished.saveUrl}
             download={finished.name}
